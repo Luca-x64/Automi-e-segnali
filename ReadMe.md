@@ -74,7 +74,7 @@ L'implementazione distingue due casi:
 - `utils/iteratore.go` — iteratore sugli automi contenuti in un sottoalbero.
 - `utils/coda.go` — coda generica di supporto.
 - `utils/cordinata.go` — tipo coordinata e distanza di Manhattan.
-- `formato_test.go`, `lib_test.go`, `utils_test.go` — suite di test.
+- `formato_test.go`, `lib_test.go`, `utils_test.go` — suite di test forniti inizialmente.
 - `relazione.pdf` — relazione estesa della versione originale del progetto.
 
 ## Complessità
