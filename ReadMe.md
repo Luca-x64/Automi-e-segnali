@@ -43,6 +43,9 @@ La raggiungibilità viene valutata sul piano discreto con vincolo di cammini com
 
 **Perché questa scelta:** aderenza alla traccia, separazione chiara tra logica geometrica e logica di visita, base per ulteriori ottimizzazioni.
 
+<img width="741" height="448" alt="image" src="https://github.com/user-attachments/assets/32e2e07d-8bbd-4958-90ae-78b3230dc06c" />
+
+
 ## Struttura del repository
 
 - `31974A_Ghirimoldi_Luca.go`: entrypoint e parsing comandi.
@@ -68,6 +71,8 @@ go run . < test/input/input1.txt | diff -u - test/output/out1.txt
 go run . < test/input/input2.txt | diff -u - test/output/out2.txt
 go run . < test/input/input3.txt | diff -u - test/output/out3.txt
 ```
+<img width="936" height="894" alt="image" src="https://github.com/user-attachments/assets/586effd0-aafd-4a42-92a6-377321e18108" />
+(test n° 3)
 
 ## Nota sulla relazione
 
