@@ -1,166 +1,74 @@
 # Automi e segnali
 
-Progetto sviluppato per il **Laboratorio di Algoritmi e Strutture Dati**.
+Progetto sviluppato per il corso di **Algoritmi e Strutture Dati**.
 
-Questa repository raccoglie l'implementazione iniziale del progetto **"Automi e segnali"**, nata come elaborato universitario e mantenuta come base di partenza per evoluzioni successive. La release `v1.0` rappresenta una fotografia della versione originale del progetto, su cui verranno poi introdotti miglioramenti, ottimizzazioni e nuove funzionalità.
+## Cos’è il progetto
 
-## Contesto
+`Automi e segnali` è un simulatore su piano cartesiano che gestisce:
 
-Il programma modella un piano cartesiano in cui possono essere presenti:
+- **automi** (nome binario + posizione);
+- **ostacoli rettangolari**;
+- **segnali di richiamo** per selezionare gli automi raggiungibili.
 
-- **automi**, identificati da un nome binario e da una posizione;
-- **ostacoli** rettangolari, che occupano aree non attraversabili del piano;
-- **segnali di richiamo**, che permettono di verificare se alcuni automi possono raggiungere un punto del piano.
+L’obiettivo è modellare un problema reale di instradamento/richiamo su griglia, mostrando competenze su progettazione di strutture dati, gestione input testuale e implementazione di algoritmi di visita su spazio discreto.
 
-L'obiettivo principale del progetto è gestire queste entità e supportare le operazioni richieste dalla traccia, mantenendo una struttura dati coerente con il problema.
+## Cosa fa e come lo fa
 
-## Funzionalità principali
+Il programma legge comandi da standard input e supporta le principali operazioni previste dalla traccia:
 
-Il programma supporta le seguenti operazioni:
+- creazione/reset del piano;
+- inserimento e riposizionamento automi;
+- inserimento ostacoli;
+- interrogazioni sullo stato del piano;
+- ricerca per prefisso dei nomi binari;
+- verifica di raggiungibilità;
+- richiamo degli automi “migliori” rispetto al segnale.
 
-- creazione o reset del piano;
-- inserimento e riposizionamento di automi;
-- inserimento di ostacoli rettangolari;
-- interrogazione dello stato di una coordinata;
-- stampa del contenuto del piano;
-- ricerca delle posizioni degli automi dato un prefisso del nome;
-- verifica dell'esistenza di un percorso libero di lunghezza esattamente pari alla distanza di Manhattan;
-- richiamo degli automi raggiungibili con un certo prefisso;
-- chiusura del programma.
+L’implementazione corrente (release candidata **v1.1.0**) include il passaggio da logica basata su **BFS** a **DFS** per la visita del piano e un miglioramento della strategia di scelta degli automi da richiamare.
 
-## Scelte implementative
+## Algoritmi e strutture dati usate (focus corso)
 
-### Rappresentazione degli automi
+### 1) Albero binario per gli automi
+Gli automi sono indicizzati in un **albero binario sui bit del nome** (`0` a sinistra, `1` a destra).
 
-Gli automi sono memorizzati tramite un **albero binario**:
+**Perché questa scelta:** ricerca naturale per nome esatto, ricerca per prefisso e coerenza con identificativi binari.
 
-- ogni arco verso sinistra rappresenta il bit `0`;
-- ogni arco verso destra rappresenta il bit `1`;
-- il percorso dalla radice a un nodo corrisponde al nome binario dell'automa.
+### 2) Collezione di rettangoli per gli ostacoli
+Gli ostacoli sono memorizzati come rettangoli definiti da due vertici.
 
-Questa scelta rende naturale:
+**Perché questa scelta:** rappresentazione diretta del dominio, controlli semplici sulle coordinate e buona estendibilità.
 
-- l'inserimento di un automa in base al suo nome;
-- la ricerca di un automa esatto;
-- la ricerca di tutti gli automi che condividono un prefisso.
+### 3) Visita su griglia e distanza di Manhattan
+La raggiungibilità viene valutata sul piano discreto con vincolo di cammini compatibili con la distanza di Manhattan.
 
-### Rappresentazione degli ostacoli
+**Perché questa scelta:** aderenza alla traccia, separazione chiara tra logica geometrica e logica di visita, base per ulteriori ottimizzazioni.
 
-Gli ostacoli sono memorizzati come rettangoli definiti da due coordinate:
+## Struttura del repository
 
-- `p0`: vertice in basso a sinistra;
-- `p1`: vertice in alto a destra.
+- `31974A_Ghirimoldi_Luca.go`: entrypoint e parsing comandi.
+- `utils/`: logica applicativa e strutture di supporto.
+- `test/input/`: file di input per i casi di test.
+- `test/output/`: output attesi corrispondenti.
+- `relazione.pdf`: documento di approfondimento.
+- `traccia.pdf` *(consigliato, se pubblicabile)*: testo ufficiale del progetto, utile a chi vuole valutare requisiti e vincoli originali.
 
-Una coordinata del piano è considerata libera se non è contenuta in alcun ostacolo.
-
-### Percorsi e distanza
-
-Per verificare la raggiungibilità di un punto si considera la **distanza di Manhattan**:
-
-`D(A, B) = |x_B - x_A| + |y_B - y_A|`
-
-L'operazione di verifica del percorso controlla l'esistenza di un cammino libero la cui lunghezza sia **esattamente uguale** a questa distanza.
-
-L'implementazione distingue due casi:
-
-1. **segmento orizzontale o verticale**: viene effettuato un controllo lineare del tratto tra i due punti;
-2. **coordinate diverse su entrambi gli assi**: viene eseguita una visita del piano limitata alle sole mosse che avvicinano alla destinazione, evitando percorsi che produrrebbero una lunghezza maggiore della distanza di Manhattan.
-
-## Struttura del progetto
-
-- `31974A_Ghirimoldi_Luca.go` — file principale, parsing dei comandi e avvio del programma.
-- `utils/piano.go` — definizione dei tipi principali e delle strutture dati.
-- `utils/functions.go` — implementazione delle operazioni richieste dalla traccia.
-- `utils/iteratore.go` — iteratore sugli automi contenuti in un sottoalbero.
-- `utils/coda.go` — coda generica di supporto.
-- `utils/cordinata.go` — tipo coordinata e distanza di Manhattan.
-- `formato_test.go`, `lib_test.go`, `utils_test.go` — suite di test forniti inizialmente.
-- `relazione.pdf` — relazione estesa della versione originale del progetto.
-
-## Complessità
-
-Di seguito una panoramica delle principali complessità dell'implementazione corrente.
-
-### Albero degli automi
-
-Sia `L` la lunghezza del nome binario di un automa.
-
-- **Ricerca di un automa/prefisso**: `Θ(L)`.
-- **Inserimento di un automa**: `Θ(L)` nel caso peggiore.
-
-Più precisamente, se `M` è il numero di nuovi nodi da creare:
-
-- caso ottimale: `O(1)` se il percorso è già presente e va solo aggiornato il nodo finale;
-- caso peggiore: `Θ(L)` se il nome richiede la creazione di tutti i nodi del cammino;
-- caso intermedio: `Θ(M)` con `M <= L`.
-
-### Iterazione su un sottoalbero
-
-Sia `N` il numero di nodi del sottoalbero visitato.
-
-- costruzione dell'iteratore: `O(N)` tempo;
-- spazio occupato dalla struttura di supporto: `O(N)`;
-- `HasNext()` e `Next()`: `O(1)`.
-
-### Coda generica
-
-Per una coda con `N` elementi:
-
-- `push`: `O(1)` ammortizzato;
-- `pop`: `O(1)`;
-- `isEmpty`: `O(1)`;
-- spazio: `O(N)`.
-
-### Controllo di coordinate libere
-
-Sia `K` il numero di ostacoli presenti nel piano.
-
-- `coordinateLibere(x, y)`: `O(K)`.
-
-### Verifica dell'esistenza di un percorso libero
-
-Il costo dipende dal caso considerato:
-
-- se il punto è interno a un ostacolo: controllo immediato dopo la scansione degli ostacoli;
-- se il percorso è orizzontale o verticale: controllo lineare sul segmento, con verifica delle coordinate attraversate;
-- nel caso generale: visita delle sole coordinate che possono appartenere a un percorso minimo rispetto alla distanza di Manhattan.
-
-In questa implementazione, il costo dipende quindi sia dal numero di ostacoli sia dal numero di coordinate esplorate durante la visita.
-
-### Richiamo
-
-L'operazione di richiamo:
-
-1. individua il nodo associato al prefisso;
-2. visita gli automi del sottoalbero;
-3. verifica per ciascuno l'esistenza di un percorso libero;
-4. seleziona quelli a distanza minima.
-
-Di conseguenza, il suo costo dipende dal numero di automi compatibili col prefisso e dal costo delle singole verifiche di raggiungibilità.
-
-## Esecuzione
-
-Per eseguire il programma:
+## Esecuzione rapida
 
 ```bash
 go run .
 ```
 
-oppure:
+## Test (3 casi principali)
+
+Per tenere più pulita la root, i file di test sono organizzati nella cartella `test/`.
+Nella relazione sono riportati i 3 comandi per verificare i casi mostrati:
 
 ```bash
-go run 31974A_Ghirimoldi_Luca.go
+go run . < test/input/input1.txt | diff -u - test/output/out1.txt
+go run . < test/input/input2.txt | diff -u - test/output/out2.txt
+go run . < test/input/input3.txt | diff -u - test/output/out3.txt
 ```
 
-## Test
+## Nota sulla relazione
 
-Per eseguire i test principali:
-
-```bash
-go test -run TestBase -v -count=1
-go test -run TestFormatoStato -v -count=1
-```
-
-## Roadmap
-
-- implementare caso "t"
+La `relazione.pdf` contiene una spiegazione più approfondita, molte scelte implementative e il razionale progettuale completo. Fa riferimento alla release **v1.0.0** (versione con BFS), quindi è da considerare come base storica rispetto all’evoluzione corrente.
