@@ -163,9 +163,4 @@ go test -run TestFormatoStato -v -count=1
 
 ## Roadmap
 
-Questa `v1.0` rappresenta la versione iniziale del progetto. Nelle versioni successive l'obiettivo è:
-
-- migliorare e ottimizzare alcune parti dell'implementazione;
-- estendere la documentazione direttamente nel repository;
-- ridurre progressivamente il ruolo della relazione estesa, mantenendo nel README solo le informazioni essenziali;
-- evolvere il progetto oltre il contesto originale dell'esame.
+- implementare caso "t"

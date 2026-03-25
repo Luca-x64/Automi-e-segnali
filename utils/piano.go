@@ -1,9 +1,4 @@
-// GHIRIMOLDI LUCA 31974A
-
 package utils
-
-
-// import "container/list"
 
 type Piano struct {
 	automi   *Albero
@@ -36,12 +31,13 @@ func (p *Piano) inserisci(automa *Automa) {
 	node := p.automi.radice
 	for _, char := range automa.nome {
 
-		if char == '0' {
+		switch char {
+		case '0':
 			if node.sx == nil {
 				node.sx = &Nodo{sx: nil, dx: nil, val: nil}
 			}
 			node = node.sx
-		} else if char == '1' {
+		case '1':
 			if node.dx == nil {
 				node.dx = &Nodo{sx: nil, dx: nil, val: nil}
 			}
@@ -59,12 +55,13 @@ func (p *Piano) cerca(prefisso string) (node *Nodo) {
 		return nil
 	}
 	for _, char := range prefisso {
-		if char == '0' {
+		switch char {
+		case '0':
 			if node.sx == nil {
 				return nil
 			}
 			node = node.sx
-		} else if char == '1' {
+		case '1':
 			if node.dx == nil {
 				return nil
 			}
@@ -97,21 +94,26 @@ func (piano *Piano) bfs(start, end Coordinata) int {
 	}
 
 	direzioni := []Coordinata{}
-	if end.y > start.y { direzioni = append(direzioni, Coordinata{0, 1}) // Su
-    } else { direzioni = append(direzioni, Coordinata{0, -1}) }// Giù 
-	if end.x > start.x { direzioni = append(direzioni, Coordinata{1, 0}) // Destra
-    } else  { direzioni = append(direzioni, Coordinata{-1, 0}) } // Sinistra 
-    
-	visitati := make(map[Coordinata]bool)
-	coda := &Coda[*NodoPercorso]{}
+	if end.y > start.y {
+		direzioni = append(direzioni, Coordinata{0, 1}) // Su
+	} else {
+		direzioni = append(direzioni, Coordinata{0, -1})
+	} // Giù
+	if end.x > start.x {
+		direzioni = append(direzioni, Coordinata{1, 0}) // Destra
+	} else {
+		direzioni = append(direzioni, Coordinata{-1, 0})
+	} // Sinistra
 
-	coda.push(&NodoPercorso{start, 0})
-	
-	for !coda.isEmpty() {
-		nodo := coda.pop()
+	visitati := make(map[Coordinata]bool)
+	stack := []*NodoPercorso{{start, 0}}
+
+	for ! (len(stack) == 0) {
+		nodo := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
 
 		for _, direzione := range direzioni {
-			
+
 			nuovaPosizione := Coordinata{nodo.posizione.x + direzione.x, nodo.posizione.y + direzione.y}
 
 			if nuovaPosizione == end {
@@ -119,9 +121,9 @@ func (piano *Piano) bfs(start, end Coordinata) int {
 			}
 			if !visitati[nuovaPosizione] && nuovaPosizione.Distanza(end) < nodo.posizione.Distanza(end) && piano.coordinateLibere(nuovaPosizione.x, nuovaPosizione.y) {
 				visitati[nuovaPosizione] = true
-				coda.push(&NodoPercorso{nuovaPosizione, nodo.distanza + 1})
+				stack = append(stack, &NodoPercorso{nuovaPosizione, nodo.distanza + 1})
 			}
-			
+
 		}
 	}
 
