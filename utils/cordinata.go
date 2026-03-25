@@ -1,5 +1,3 @@
-// GHIRIMOLDI LUCA 31974A
-
 package utils
 
 import "math"

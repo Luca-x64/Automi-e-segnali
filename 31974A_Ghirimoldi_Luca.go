@@ -1,14 +1,12 @@
-// GHIRIMOLDI LUCA 31974A
-
 package main
 
 import (
 	"bufio"
 	"fmt"
 	"os"
+	"solution/utils"
 	"strconv"
 	"strings"
-	"solution/utils"
 )
 
 func main() {
@@ -18,13 +16,15 @@ func main() {
 		data := scanner.Text()
 		if data == "c" {
 			piano = newPiano()
-		}else {esegui(piano, data)}
+		} else {
+			esegui(piano, data)
+		}
 	}
 }
 
 func newPiano() piano {
-    return *utils.Crea()
-    }
+	return *utils.Crea()
+}
 
 /*
 funzione che applica al piano rappresentato da p l’operazione associata dalla stringa s, secondo quanto
@@ -42,7 +42,7 @@ func esegui(p piano, s string) {
 
 			fmt.Println(p.Stato(x, y))
 		case 'S':
-			
+
 			p.Stampa()
 		case 'a':
 			a, _ := strconv.Atoi(line[1])
@@ -70,19 +70,20 @@ func esegui(p piano, s string) {
 			b, _ := strconv.Atoi(line[2])
 
 			esiste := p.EsistePercorso(a, b, line[3])
-			if esiste { fmt.Println("SI") } else { fmt.Println("NO")}
+			if esiste {
+				fmt.Println("SI")
+			} else {
+				fmt.Println("NO")
+			}
 		case 'f':
 			os.Exit(0)
-		case 't': // per febbraio 
-		fmt.Println(0)
+		case 't': // per febbraio
+			fmt.Println(0)
 		default:
-			
+
 		}
 	}
 
 }
 
 type piano = utils.Piano
-
-
-

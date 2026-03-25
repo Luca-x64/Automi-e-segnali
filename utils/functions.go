@@ -1,5 +1,3 @@
-// GHIRIMOLDI LUCA 31974A
-
 package utils
 
 import (
@@ -102,43 +100,33 @@ Viene emesso il segnale di richiamo α dal punto (x, y) (ovviamente,
 se il punto (x, y) appartiene a qualche ostacolo, esso non `e raggiungibile da alcun automa).
 */
 func (piano *Piano) Richiamo(x int, y int, s string) { // (x,y) è il punto di richiamo, s è il prefisso degli automi che possono raggiungere il punto di richiamo
-
-	if !piano.coordinateLibere(x, y) { // se il punto (x, y) appartiene a qualche ostacolo, esso non `e raggiungibile da alcun automa).
+	if !piano.coordinateLibere(x, y) {
 		return
 	}
 
 	coordRichiamo := Coordinata{x, y}
 	nodo := piano.cerca(s)
-	var automiRaggiungibili []*Automa
-	it := nodo.Iteratore()
-	for it.HasNext() { // itera su tutti gli automi con prefisso s
-		automa := it.Next()
-		if piano.EsistePercorso(coordRichiamo.x, coordRichiamo.y, automa.nome) {
-			automiRaggiungibili = append(automiRaggiungibili, automa)
-		}
-	}
-
-	if len(automiRaggiungibili) == 0 {
+	if nodo == nil {
 		return
 	}
-
-	distanzaMinima := automiRaggiungibili[0].pos.Distanza(coordRichiamo)
-
-	// trova la distanza minima
-	
-	for _, automa := range automiRaggiungibili[1:] {
-		distanza := automa.pos.Distanza(coordRichiamo)
-		if distanza < distanzaMinima {
-			distanzaMinima = distanza
+	it := nodo.Iteratore()
+	var automiMinDistanza []*Automa
+	distanzaMinima := -1
+	for it.HasNext() {
+		automa := it.Next()
+		if piano.EsistePercorso(coordRichiamo.x, coordRichiamo.y, automa.nome) {
+			distanza := automa.pos.Distanza(coordRichiamo)
+			if distanzaMinima == -1 || distanza < distanzaMinima {
+				distanzaMinima = distanza
+				automiMinDistanza = automiMinDistanza[:0]
+				automiMinDistanza = append(automiMinDistanza, automa)
+			} else if distanza == distanzaMinima {
+				automiMinDistanza = append(automiMinDistanza, automa)
+			}
 		}
 	}
-	
-	
-
-	for _, automa := range automiRaggiungibili {
-		if automa.pos.Distanza(coordRichiamo) == distanzaMinima {
+	for _, automa := range automiMinDistanza {
 		automa.pos = coordRichiamo
-	}
 	}
 }
 
@@ -178,17 +166,19 @@ func (piano *Piano) EsistePercorso(x int, y int, n string) bool {
 	}
 
 	dest := Coordinata{x, y}
-	if nodo.val.pos == dest { return false}
+	if nodo.val.pos == dest {
+		return false
+	}
 	pos := nodo.val.pos
 	if pos.x == x { // Se i due punti hanno la stessa x
-		min := min(pos.y,y)
+		min := min(pos.y, y)
 		max := max(pos.y, y)
-		for i:= min; i <= max ; i += 2 {
+		for i := min; i <= max; i += 2 {
 			if !piano.coordinateLibere(x, i) {
 				return false
 			}
 		}
-		distanzaPercorsa := max-min
+		distanzaPercorsa := max - min
 		return pos.Distanza(dest) == distanzaPercorsa
 	}
 
@@ -200,9 +190,8 @@ func (piano *Piano) EsistePercorso(x int, y int, n string) bool {
 				return false
 			}
 		}
-		return pos.Distanza(dest) == max-min 
+		return pos.Distanza(dest) == max-min
 	}
-
 
 	percorsoCalcolato := piano.bfs(pos, dest)
 	return percorsoCalcolato != -1
