@@ -71,9 +71,11 @@ go run . < test/input/input1.txt | diff -u - test/output/out1.txt
 go run . < test/input/input2.txt | diff -u - test/output/out2.txt
 go run . < test/input/input3.txt | diff -u - test/output/out3.txt
 ```
-<img width="936" height="894" alt="image" src="https://github.com/user-attachments/assets/586effd0-aafd-4a42-92a6-377321e18108" />
-![Risultato del test](<img width="936" height="894" alt="image" src="https://github.com/user-attachments/assets/586effd0-aafd-4a42-92a6-377321e18108" />)
-(test n° 3)
+<figure>
+  
+<img width="936" height="894" alt="risultato del test n°3" src="https://github.com/user-attachments/assets/586effd0-aafd-4a42-92a6-377321e18108" />
+  <figcaption>test n° 3</figcaption>
+</figure>
 
 ## Nota sulla relazione
 
